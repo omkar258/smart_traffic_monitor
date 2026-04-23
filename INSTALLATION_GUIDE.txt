@@ -1,0 +1,185 @@
+========================================================================
+INSTALLATION GUIDE
+Real-Time Smart Traffic Monitoring System Using YOLO and Deep Learning
+========================================================================
+
+SYSTEM REQUIREMENTS
+───────────────────
+  Python      : 3.10 or higher  (https://python.org/downloads)
+  RAM         : Minimum 4 GB    (8 GB recommended)
+  Disk        : ~2 GB free space (for dependencies + weights)
+  OS          : Windows 10/11, Ubuntu 20.04+, macOS 12+
+  GPU (opt.)  : NVIDIA GPU with CUDA 11.8+ for fast inference
+
+========================================================================
+STEP 1 – VERIFY PYTHON INSTALLATION
+========================================================================
+
+Open a terminal / PowerShell and run:
+
+  python --version
+  # Expected: Python 3.10.x or higher
+
+If Python is not installed, download from https://python.org/downloads
+(Tick "Add Python to PATH" during Windows installation)
+
+========================================================================
+STEP 2 – NAVIGATE TO PROJECT DIRECTORY
+========================================================================
+
+  cd D:\deep_learning\smart_traffic_monitor
+
+========================================================================
+STEP 3 – CREATE A VIRTUAL ENVIRONMENT (recommended)
+========================================================================
+
+Windows (PowerShell):
+  python -m venv venv
+  .\venv\Scripts\Activate.ps1
+
+  # If execution policy error:
+  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+macOS / Linux (bash):
+  python3 -m venv venv
+  source venv/bin/activate
+
+You should see "(venv)" at the start of your prompt.
+
+========================================================================
+STEP 4A – CPU INSTALLATION (no GPU / default)
+========================================================================
+
+  pip install --upgrade pip
+  pip install -r requirements.txt
+
+This installs:
+  • torch + torchvision (CPU version)
+  • ultralytics (YOLOv8)
+  • opencv-python
+  • matplotlib, numpy, pandas, etc.
+
+========================================================================
+STEP 4B – GPU INSTALLATION (NVIDIA CUDA – faster!)
+========================================================================
+
+First, check your CUDA version:
+  nvidia-smi
+  # Look for "CUDA Version: XX.X" in the output
+
+Then install matching PyTorch (example for CUDA 12.1):
+  pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+
+Then install the rest:
+  pip install -r requirements.txt
+
+For other CUDA versions, visit: https://pytorch.org/get-started/locally/
+
+========================================================================
+STEP 5 – VERIFY INSTALLATION
+========================================================================
+
+  python -c "import torch; print('Torch:', torch.__version__)"
+  python -c "import ultralytics; print('Ultralytics OK')"
+  python -c "import cv2; print('OpenCV:', cv2.__version__)"
+
+Expected output (no errors):
+  Torch: 2.x.x
+  Ultralytics OK
+  OpenCV: 4.x.x
+
+========================================================================
+STEP 6 – RUN THE DEMO (no video file needed)
+========================================================================
+
+  python demo_image.py
+
+What happens:
+  1. yolov8n.pt (~6 MB) downloads automatically to models/
+  2. A synthetic traffic scene is generated
+  3. YOLOv8 runs inference
+  4. Annotated image shown in a window → press any key to close
+  5. Chart saved to outputs/reports/
+
+========================================================================
+STEP 7 – RUN ON A VIDEO FILE
+========================================================================
+
+Option A – Auto-download a free test video:
+  python main.py
+  (or)
+  python main.py --source data/sample_images/sample_traffic.mp4
+
+Option B – Use your own video:
+  Copy your video to data/sample_images/
+  python main.py --source data/sample_images/YOUR_VIDEO.mp4
+
+Press Q in the video window to stop early.
+
+========================================================================
+STEP 8 – RUN ON WEBCAM
+========================================================================
+
+  python main.py --source 0
+
+  (0 = first webcam; use 1, 2 … for additional cameras)
+
+========================================================================
+STEP 9 – HEADLESS MODE (no pop-up window)
+========================================================================
+
+  python main.py --source video.mp4 --no-display
+
+Useful for running on servers, remote machines, or Jupyter notebooks.
+
+========================================================================
+STEP 10 – CHECK OUTPUTS
+========================================================================
+
+After running, check:
+  outputs/detections/      ← Annotated video MP4
+  outputs/reports/         ← Charts, CSV, session report text
+
+========================================================================
+TROUBLESHOOTING
+========================================================================
+
+PROBLEM: `pip` command not found
+  FIX: Use `python -m pip install` instead
+
+PROBLEM: `ModuleNotFoundError: No module named 'ultralytics'`
+  FIX: Run `pip install ultralytics`
+
+PROBLEM: `ERROR: Could not open video`
+  FIX: Check the file path; try an absolute path e.g.
+       python main.py --source "C:/Users/You/Videos/traffic.mp4"
+
+PROBLEM: OpenCV window not appearing
+  FIX: Remove --no-display flag; install opencv-python not opencv-headless
+
+PROBLEM: CUDA out of memory
+  FIX: Use `--device cpu` flag
+
+PROBLEM: Execution policy error on Windows (venv activate)
+  FIX: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+PROBLEM: Very low FPS (< 5) on CPU
+  FIX: Normal for CPU inference – acceptable for monitoring use cases
+       Or upgrade to GPU for real-time performance
+
+========================================================================
+QUICK REFERENCE COMMANDS
+========================================================================
+
+  pip install -r requirements.txt          # Install all dependencies
+  python demo_image.py                     # Quick synthetic demo
+  python main.py                           # Auto-download + run
+  python main.py --source 0               # Webcam
+  python main.py --source video.mp4       # Video file
+  python main.py --source image.jpg       # Single image
+  python main.py --source video.mp4 --device cuda    # Force GPU
+  python main.py --source video.mp4 --conf 0.5       # Higher confidence
+  python main.py --source video.mp4 --no-display     # Headless
+  python evaluate.py                       # Batch evaluate data/ folder
+
+========================================================================

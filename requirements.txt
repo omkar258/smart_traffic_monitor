@@ -3,6 +3,9 @@
 # ============================================================
 # Install with: pip install -r requirements.txt
 
+# Web Interface (Streamlit Cloud deployment)
+streamlit>=1.32.0
+
 # Core Deep Learning
 torch>=2.0.0
 torchvision>=0.15.0
@@ -10,10 +13,8 @@ torchvision>=0.15.0
 # YOLO (Ultralytics YOLOv8)
 ultralytics>=8.0.0
 
-# Computer Vision
-opencv-python>=4.8.0
-# NOTE: Do NOT install opencv-python-headless alongside opencv-python
-# It removes GUI support and breaks cv2.imshow()
+# Computer Vision — headless version required for Streamlit Cloud (no display server)
+opencv-python-headless>=4.8.0
 
 # Data Science & Numerics
 numpy>=1.24.0
